@@ -39,4 +39,12 @@ extension ABIFunction {
             gasLimit: self.gasLimit ?? gasLimit ?? 0
         )
     }
+    
+    public func encodeParameters() throws -> Data {
+        let encoder = ABIFunctionEncoder(Self.name)
+        try self.encode(to: encoder)
+        
+        let bytes = (try encoder.encodedValues.encoded(isDynamic: false))
+        return bytes.withUnsafeBufferPointer { Data(buffer: $0) }
+    }
 }
