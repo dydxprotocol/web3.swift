@@ -28,4 +28,13 @@ extension ABIFunction {
         
         return EthereumTransaction(from: from, to: contract, data: data, gasPrice: self.gasPrice ?? gasPrice ?? BigUInt(0), gasLimit: self.gasLimit ?? gasLimit ?? BigUInt(0))
     }
+    
+    public func encodeParameters() throws -> Data {
+        let encoder = ABIFunctionEncoder(Self.name)
+        try self.encode(to: encoder)
+        
+        let bytes = (try encoder.encodedValues.encoded(isDynamic: false))
+        return bytes.withUnsafeBufferPointer { Data(buffer: $0) }
+    }
+
 }
